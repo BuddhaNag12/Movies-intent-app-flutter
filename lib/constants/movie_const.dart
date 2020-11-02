@@ -13,4 +13,6 @@ class MovieConstants {
   getImagePath(String path) => 'https://image.tmdb.org/t/p/w780/' + path;
 
   getBackdropPath(String path) => 'https://image.tmdb.org/t/p/w1280/' + path;
+
+    final backdropImages = 'https://api.themoviedb.org/3/movie/id/images?api_key=${ApiKey().apiKey}';
 }

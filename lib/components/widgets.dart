@@ -1,4 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:movies_intent/constants/movie_const.dart';
 import 'package:movies_intent/models/movieModel.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,8 +23,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       elevation: 0.0,
-      backgroundColor: Colors.transparent,
-      // brightness: Brightness.light,
+      backgroundColor: Colors.white,
       leading: IconButton(
         icon: Icon(Icons.menu),
         // color: Colors,
@@ -34,7 +35,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
             children: [
               IconButton(
                 icon: Icon(Icons.search),
-                // color: Colors.black,
                 enableFeedback: true,
                 tooltip: 'Head toward search Screen',
                 onPressed: () => {Navigator.pushNamed(context, '/Search')},
@@ -66,7 +66,7 @@ class _CarouselState extends State<Carousel> {
           autoPlayInterval: Duration(seconds: 3),
           autoPlayAnimationDuration: Duration(milliseconds: 800),
           autoPlayCurve: Curves.fastOutSlowIn,
-          enlargeCenterPage: true,
+          enlargeCenterPage: false,
           scrollDirection: Axis.horizontal,
           // height: 400,
           viewportFraction: 0.7,
@@ -82,31 +82,15 @@ class _CarouselState extends State<Carousel> {
                     borderRadius: BorderRadius.circular(40),
                     boxShadow: [
                       BoxShadow(
-                          color: Color.fromRGBO(0, 0, 0, 0.4),
-                          blurRadius: 8,
-                          spreadRadius: 0),
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 5,
+                          spreadRadius: 0,
+                          offset: Offset(0, 2)),
                     ]),
-                child: Stack(children: [
-                  Container(
-                    alignment: Alignment.center,
-                    child: posterWidget(context, i.posterPath, i.id),
-                  ),
-                  Positioned(
-                    top: 153,
-                    right: 10,
-                    left: 10,
-                    child: Container(
-                        width: 220,
-                        margin: EdgeInsets.only(bottom: 4),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(40),
-                            color: Color.fromRGBO(100, 100, 100, 0.8)),
-                        child: SizedBox(
-                            width: 220,
-                            height: 50,
-                            child: titleWidget(i.title))),
-                  )
-                ]),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: posterWidget(context, i.posterPath, i.id),
+                ),
               );
             },
           );
@@ -136,13 +120,13 @@ Widget posterWidget(BuildContext context, String imagePath, int id) {
           child: ClipRRect(
               borderRadius: BorderRadius.circular(40),
               child: Image.network(MovieConstants().getImagePath(imagePath),
-                  width: 300, height: 200, fit: BoxFit.fitWidth)),
+                  width: 300, height: 200, fit: BoxFit.cover)),
         )
       : ClipRRect(
           borderRadius: BorderRadius.circular(40),
           child: Image.network(
               'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
-              fit: BoxFit.fitWidth));
+              fit: BoxFit.cover));
 }
 
 Widget headingContent(Future<Welcome> _myData) {
@@ -152,91 +136,109 @@ Widget headingContent(Future<Welcome> _myData) {
       if (snapshot.hasData) {
         return Carousel(snapshot.data.results);
       } else {
-        return Center(child: CircularProgressIndicator());
+        return Center(
+          child: Loading(
+              indicator: BallPulseIndicator(), size: 50.0, color: Colors.amber),
+        );
       }
     },
   );
 }
 
-// InkWell(
-//                 onTap: () => ,child:),
 Widget listView(BuildContext context, List<Result> listitems) {
   return ListView.builder(
+    padding: EdgeInsets.symmetric(vertical: 10.0),
     scrollDirection: Axis.horizontal,
     itemCount: listitems.length,
-    // itemExtent: 200,
     itemBuilder: (_, i) {
       return InkWell(
-        borderRadius: BorderRadius.circular(20),
-        splashColor: Colors.amberAccent,
+        borderRadius: BorderRadius.all(
+          Radius.circular(24),
+        ),
+        splashColor: Colors.amber,
         onTap: () => {
           Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => DetailScreen(movieId: listitems[i].id)),
-          )
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DetailScreen(movieId: listitems[i].id)))
         },
         child: Container(
-          width: 140,
-          // height: 180,
-          margin: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24),
-              gradient: LinearGradient(colors: [
-                Colors.yellow,
-                Colors.redAccent,
-              ], begin: Alignment.topLeft, end: Alignment.centerRight),
-              boxShadow: [
-                BoxShadow(
-                    color: Color.fromRGBO(0, 0, 0, 0.6),
-                    blurRadius: 2,
-                    spreadRadius: 0),
-              ]),
-          child: Stack(
-            children: [
-              Container(
-                alignment: Alignment.centerRight,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: listitems[i].posterPath != null
-                      ? Image.network(
-                          MovieConstants()
-                              .getImagePath(listitems[i].posterPath),
-                        )
-                      : listitems[i].backdropPath != null
-                          ? Image.network(MovieConstants()
-                              .getBackdropPath(listitems[i].backdropPath))
-                          : Image.network(MovieConstants().roughImage),
-                ),
-              ),
-              Positioned(
-                right: 20,
-                top: 10,
-                child: voteAverage(listitems[i].voteAverage.toString()),
-              ),
-              Positioned(
-                bottom: 10,
-                right: 10,
-                left: 20,
-                child: SizedBox(
-                  width: 150,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: Colors.white24,
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Text(
-                      listitems[i].title,
-                      overflow: TextOverflow.ellipsis,
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.normal, color: Colors.white),
+            margin: EdgeInsets.symmetric(horizontal: 5),
+            width: MediaQuery.of(context).size.width * 0.4,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                gradient: LinearGradient(colors: [
+                  Colors.yellow,
+                  Colors.redAccent,
+                ], begin: Alignment.topLeft, end: Alignment.centerRight),
+                boxShadow: [
+                  BoxShadow(
+                      color: Color.fromRGBO(0, 0, 0, 0.6),
+                      blurRadius: 2,
+                      spreadRadius: 0),
+                ]),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Stack(children: [
+                  Container(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: listitems[i].posterPath != null
+                          ? Image.network(
+                              MovieConstants()
+                                  .getImagePath(listitems[i].posterPath),
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            )
+                          : listitems[i].backdropPath != null
+                              ? Image.network(
+                                  MovieConstants().getBackdropPath(
+                                      listitems[i].backdropPath),
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  MovieConstants().roughImage,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                ),
                     ),
                   ),
+                  Positioned(
+                    right: 10,
+                    top: 10,
+                    child: voteAverage(listitems[i].voteAverage.toString()),
+                  ),
+                ]),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Text(
+                    listitems[i].title,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 18),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ),
+                // Text(
+                //   listitems[i].releaseDate.toString(),
+                //   overflow: TextOverflow.ellipsis,
+                //   textAlign: TextAlign.center,
+                //   style: TextStyle(
+                //       fontWeight: FontWeight.w200,
+                //       color: Colors.white,
+                //       fontSize: 12),
+                // ),
+              ],
+            )),
       );
     },
   );
@@ -250,40 +252,3 @@ Widget voteAverage(String vote) {
     ),
   );
 }
-
-// Column(children: [
-//             SizedBox(
-//               width: 300,
-//               height: 300,
-//               child: Container(
-//                 alignment: Alignment.centerRight,
-//                 margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-//                 decoration: BoxDecoration(
-//                     borderRadius: BorderRadius.circular(24),
-//                     gradient: LinearGradient(colors: [
-//                       Colors.yellow,
-//                       Colors.redAccent,
-//                     ], begin: Alignment.topLeft, end: Alignment.centerRight),
-//                     boxShadow: [
-//                       BoxShadow(
-//                           color: Color.fromRGBO(0, 0, 0, 0.6),
-//                           blurRadius: 2,
-//                           spreadRadius: 0),
-//                     ]),
-//                 // child: ClipRRect(
-
-//                 //   borderRadius: BorderRadius.circular(24),
-//                 //   child: Image.network(
-//                 //     MovieConstants()
-//                 //         .getImagePath(listitems.data.results[i].posterPath),
-//                 //   ),
-//                 // ),
-//               ),
-//             ),
-// Text(
-//   listitems.data.results[i].title,
-//   overflow: TextOverflow.ellipsis,
-//   textAlign: TextAlign.start,
-//   style: TextStyle(fontWeight: FontWeight.normal),
-// )
-//           ]),

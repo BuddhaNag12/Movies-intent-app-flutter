@@ -5,6 +5,7 @@ import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:movies_intent/constants/movie_const.dart';
 import 'package:movies_intent/models/movieDetailModel.dart';
+import 'package:movies_intent/screens/imageScreen.dart';
 import 'package:movies_intent/services/fetchMovieDetails.dart';
 
 class DetailScreen extends StatefulWidget {
@@ -37,9 +38,6 @@ class _DetailScreenState extends State<DetailScreen> {
     List<ProductionCompany> companies,
   ) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-      ),
       child: Column(
         children: [
           Padding(
@@ -48,42 +46,18 @@ class _DetailScreenState extends State<DetailScreen> {
                 child: Container(
               margin: EdgeInsets.all(10),
               alignment: Alignment.topLeft,
-              child: Wrap(children: [
+              child: Wrap(spacing: 2, children: [
                 Text(
                   title,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
-                Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5),
-                    padding: EdgeInsets.all(5),
-                    decoration: BoxDecoration(
-                        color: adult ? Colors.redAccent : Colors.teal,
-                        boxShadow: [
-                          BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.6),
-                              blurRadius: 2,
-                              spreadRadius: 0,
-                              offset: Offset.fromDirection(0.5, 1)),
-                        ],
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Text(
-                      adult == true ? 'Adult' : 'Non Adult',
-                      style: TextStyle(fontSize: 15, color: Colors.white),
-                    ))
-              ]),
-            )),
-          ),
-          SizedBox(height: 20),
-          Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              alignment: Alignment.centerLeft,
-              child: Wrap(
-                children: genres.map((e) {
-                  return Container(
+                InkWell(
+                  splashColor: Colors.amberAccent,
+                  child: Container(
                       margin: EdgeInsets.symmetric(horizontal: 5),
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(6),
                       decoration: BoxDecoration(
-                          color: Colors.amber[100],
+                          color: adult ? Colors.redAccent : Colors.teal,
                           boxShadow: [
                             BoxShadow(
                                 color: Color.fromRGBO(0, 0, 0, 0.6),
@@ -92,7 +66,44 @@ class _DetailScreenState extends State<DetailScreen> {
                                 offset: Offset.fromDirection(0.5, 1)),
                           ],
                           borderRadius: BorderRadius.circular(20)),
-                      child: Text(e.name));
+                      child: Text(
+                        adult == true ? 'Adult' : 'Non Adult',
+                        style: TextStyle(fontSize: 15, color: Colors.white),
+                      )),
+                )
+              ]),
+            )),
+          ),
+          SizedBox(height: 10),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              alignment: Alignment.centerLeft,
+              child: Wrap(
+                spacing: 5,
+                children: genres.map((e) {
+                  return InkWell(
+                    splashColor: Colors.amberAccent,
+                    enableFeedback: true,
+                    child: Container(
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                        padding: EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 10.0),
+                        decoration: BoxDecoration(
+                            color: Colors.deepOrange[200],
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color.fromRGBO(0, 0, 0, 0.6),
+                                  blurRadius: 2,
+                                  spreadRadius: 0,
+                                  offset: Offset.fromDirection(0.5, 1)),
+                            ],
+                            borderRadius: BorderRadius.circular(20)),
+                        child: Text(
+                          e.name,
+                          style: TextStyle(color: Colors.white),
+                        )),
+                  );
                 }).toList(),
               )),
           SizedBox(height: 20),
@@ -164,7 +175,7 @@ class _DetailScreenState extends State<DetailScreen> {
                           style: TextStyle(
                               fontSize: 16, fontWeight: FontWeight.w400),
                         )
-                      : Text('No tagline Found'),
+                      : Text('No Plot found'),
                 ],
               )),
           SizedBox(height: 20),
@@ -185,7 +196,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       ? Text(
                           plot,
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w400),
+                              fontSize: 20, fontWeight: FontWeight.w400),
                         )
                       : Text('No Plot found'),
                 ],
@@ -217,6 +228,7 @@ class _DetailScreenState extends State<DetailScreen> {
                                 margin: EdgeInsets.symmetric(
                                     horizontal: 5, vertical: 5),
                                 padding: EdgeInsets.all(10),
+                                // alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
                                     color: Colors.red[400],
                                     boxShadow: [
@@ -262,16 +274,31 @@ class _DetailScreenState extends State<DetailScreen> {
                       expandedHeight: 300.0,
                       flexibleSpace: FlexibleSpaceBar(
                         centerTitle: true,
-                        title: Text(snapShot.data.originalTitle,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16.0,
-                            )),
+                        title: Text(
+                          snapShot.data.originalTitle,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 25,
+                          ),
+                        ),
                         background: snapShot.data.backdropPath != null
-                            ? Image.network(
-                                MovieConstants().getBackdropPath(
-                                    snapShot.data.backdropPath),
-                                fit: BoxFit.cover,
+                            ? InkWell(
+                                splashColor: Colors.amberAccent,
+                                onTap: () => Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ImageScreen(
+                                              imagePath:
+                                                  snapShot.data.backdropPath,
+                                            ))),
+                                child: Hero(
+                                  tag: snapShot.data.backdropPath,
+                                  child: Image.network(
+                                    MovieConstants().getBackdropPath(
+                                        snapShot.data.backdropPath),
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               )
                             : snapShot.data.posterPath != null
                                 ? Image.network(
@@ -296,7 +323,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                     ),
                     SliverFixedExtentList(
-                        itemExtent: 700,
+                        itemExtent: 800,
                         delegate: SliverChildListDelegate([
                           _descriptionView(
                             snapShot.data.title,

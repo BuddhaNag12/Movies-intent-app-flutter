@@ -1,3 +1,4 @@
+
 class Welcome {
   bool adult;
   String backdropPath;
@@ -49,6 +50,7 @@ class Welcome {
       this.productionCompanies});
 
   factory Welcome.fromJson(Map<String, dynamic> json) {
+    
     return Welcome(
       id: json['id'],
       title: json['title'],

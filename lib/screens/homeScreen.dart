@@ -14,11 +14,17 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   Future<Welcome> _myData;
   Future<Welcome> _upcoming;
-
+  bool isLoading = true;
   @override
   void initState() {
+    isLoading = true;
     _myData = fetchMovies();
     _upcoming = fetchUpcomingMovies();
+    fetchMovies().then((val) => {
+          fetchUpcomingMovies().then((value) => {
+                setState(() => {isLoading = false})
+              })
+        });
     super.initState();
   }
 
@@ -30,12 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return Container(
           height: 240,
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-            colors: [Colors.amber[200], Colors.red[200]],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )),
           child: ListView(
             padding: EdgeInsets.all(5),
             children: <Widget>[
@@ -82,70 +82,79 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(showbottomSheet),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            headingContent(_myData),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text('Upcoming Movies',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Container(
-                        height: 1.0,
-                        width: MediaQuery.of(context).size.width / 2,
-                        color: Colors.redAccent,
+      body: isLoading
+          ? Center(
+              child: Loading(
+                  indicator: BallPulseIndicator(),
+                  size: 50.0,
+                  color: Colors.amber),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  headingContent(_myData),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 10),
+                            child: Text('Upcoming Movies',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Container(
+                              height: 1.0,
+                              width: MediaQuery.of(context).size.width / 2,
+                              color: Colors.redAccent,
+                            ),
+                          ),
+                          InkWell(
+                              splashColor: Colors.amberAccent,
+                              child: Text('View all')),
+                        ],
                       ),
-                    ),
-                    Text('View all'),
-                  ],
-                ),
-                HorizontalList(_upcoming),
-              ],
-            ),
-            SizedBox(height: 10),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text('Most Popular',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0),
-                      child: Container(
-                        height: 1.0,
-                        width: MediaQuery.of(context).size.width / 2,
-                        color: Colors.redAccent,
+                      HorizontalList(_upcoming),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding:
+                                const EdgeInsets.only(left: 8.0, bottom: 10),
+                            child: Text('Most Popular',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Container(
+                              height: 1.0,
+                              width: MediaQuery.of(context).size.width / 2,
+                              color: Colors.redAccent,
+                            ),
+                          ),
+                          InkWell(child: Text('View all')),
+                        ],
                       ),
-                    ),
-                    Text('View all'),
-                  ],
-                ),
-                HorizontalList(_myData),
-              ],
+                      HorizontalList(_myData),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -156,24 +165,22 @@ class HorizontalList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      // width: 250,
-      // color: Colors.red,
-      child: FutureBuilder<Welcome>(
-          future: movies,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return listView(context, snapshot.data.results);
-            } else {
-              return Center(
-                child: Loading(
-                    indicator: BallPulseIndicator(),
-                    size: 100.0,
-                    color: Colors.amber),
-              );
-            }
-          }),
-    );
+    return FutureBuilder<Welcome>(
+        future: movies,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Container(
+                height: 250,
+                // color: Colors.red,
+                child: listView(context, snapshot.data.results));
+          } else {
+            return Center(
+              child: Loading(
+                  indicator: BallPulseIndicator(),
+                  size: 50.0,
+                  color: Colors.amber),
+            );
+          }
+        });
   }
 }

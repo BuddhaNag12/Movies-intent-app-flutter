@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:movies_intent/screens/aboutScreen.dart';
 import 'package:movies_intent/screens/detailScreen.dart';
@@ -14,10 +15,15 @@ Future main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+    ));
+
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.amber,
         // scaffoldBackgroundColor: Colors.white,
+        // brightness: Brightness.dark,
         accentColor: Color.fromRGBO(247, 236, 110, 100),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
