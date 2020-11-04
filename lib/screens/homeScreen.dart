@@ -2,6 +2,7 @@ import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:movies_intent/components/widgets.dart';
 import 'package:movies_intent/models/movieModel.dart';
+import 'package:movies_intent/screens/gridViewScreen.dart';
 import 'package:movies_intent/services/apiCalls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -80,41 +81,49 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyAppBar(showbottomSheet),
-      body: isLoading
-          ? Center(
+    return isLoading
+        ? Scaffold(
+            body: Center(
               child: Loading(
                   indicator: BallPulseIndicator(),
                   size: 50.0,
                   color: Colors.amber),
-            )
-          : SingleChildScrollView(
+            ),
+          )
+        : Scaffold(
+            appBar: MyAppBar(showbottomSheet),
+            body: SingleChildScrollView(
               child: Column(
                 children: [
                   headingContent(_myData),
                   Column(
                     children: [
+                      Container(
+                        alignment: Alignment.centerLeft,
+                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 5),
+                          child: Text('Upcoming Movies',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 8.0, bottom: 10),
-                            child: Text('Upcoming Movies',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Container(
-                              height: 1.0,
-                              width: MediaQuery.of(context).size.width / 2,
-                              color: Colors.redAccent,
-                            ),
+                          Container(
+                            height: 1.0,
+                            width: MediaQuery.of(context).size.width / 2 + 50,
+                            color: Colors.redAccent,
                           ),
                           InkWell(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          GridViewScreen(category: 'upcoming'))),
                               splashColor: Colors.amberAccent,
                               child: Text('View all')),
                         ],
@@ -123,6 +132,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   SizedBox(height: 20),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    margin: EdgeInsets.symmetric(horizontal: 20),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, bottom: 10),
+                      child: Text('Most Popular',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -130,23 +150,18 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.only(left: 8.0, bottom: 10),
-                            child: Text('Most Popular',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                          Container(
+                            height: 1.0,
+                            width: MediaQuery.of(context).size.width / 2 + 50,
+                            color: Colors.redAccent,
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Container(
-                              height: 1.0,
-                              width: MediaQuery.of(context).size.width / 2,
-                              color: Colors.redAccent,
-                            ),
-                          ),
-                          InkWell(child: Text('View all')),
+                          InkWell(
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          GridViewScreen(category: 'popular'))),
+                              child: Text('View all')),
                         ],
                       ),
                       HorizontalList(_myData),
@@ -155,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-    );
+          );
   }
 }
 

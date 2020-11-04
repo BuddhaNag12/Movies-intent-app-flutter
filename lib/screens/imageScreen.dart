@@ -11,12 +11,11 @@ class ImageScreen extends StatefulWidget {
 }
 
 class _ImageScreenState extends State<ImageScreen> {
-  var boxfit = BoxFit.cover;
+  var _boxfit = BoxFit.cover;
 
   changeFit() {
-
     setState(() {
-      boxfit== BoxFit.contain ? boxfit= BoxFit.cover : boxfit=BoxFit.contain;
+      _boxfit== BoxFit.contain ? _boxfit= BoxFit.cover : _boxfit=BoxFit.contain;
     });
   }
 
@@ -28,7 +27,7 @@ class _ImageScreenState extends State<ImageScreen> {
           tag: widget.imagePath,
           child: Image.network(
             MovieConstants().getBackdropPath(widget.imagePath),
-            fit: boxfit,
+            fit: _boxfit,
             height: double.infinity,
             width: double.infinity,
             alignment: Alignment.center,
@@ -43,7 +42,7 @@ class _ImageScreenState extends State<ImageScreen> {
               splashColor: Colors.amberAccent,
               onPressed: changeFit,
               child: Icon(
-                Icons.square_foot_rounded,
+                Icons.crop_16_9_outlined,
                 color: Colors.white,
               ),
             )),

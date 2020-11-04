@@ -217,15 +217,16 @@ Widget listView(BuildContext context, List<Result> listitems) {
                   ),
                 ]),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Text(
                     listitems[i].title,
                     overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
-                        fontSize: 18),
+                        fontSize: 16),
                   ),
                 ),
                 // Text(
