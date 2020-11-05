@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:movies_intent/components/widgets.dart';
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       elevation: 5,
       builder: (BuildContext context) {
         return Container(
-          height: 240,
+          height: 280,
           child: ListView(
             padding: EdgeInsets.all(5),
             children: <Widget>[
@@ -60,6 +61,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ListTile(
                       leading: Icon(Icons.help_outline),
                       title: Text('Help'),
+                    ),
+                  ),
+                  FlatButton(
+                    onPressed: () =>
+                        AdaptiveTheme.of(context).toggleThemeMode(),
+                    child: ListTile(
+                      leading: Icon(Icons.settings_brightness),
+                      title: Text('Toggle Theme'),
                     ),
                   ),
                   FlatButton(
@@ -119,13 +128,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.redAccent,
                           ),
                           InkWell(
+                              borderRadius: BorderRadius.circular(24),
                               onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          GridViewScreen(category: 'upcoming'))),
+                                      builder: (context) => GridViewScreen(
+                                          category: 'upcoming'))),
                               splashColor: Colors.amberAccent,
-                              child: Text('View all')),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('View all'),
+                              )),
                         ],
                       ),
                       HorizontalList(_upcoming),
@@ -156,12 +169,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             color: Colors.redAccent,
                           ),
                           InkWell(
+                              borderRadius: BorderRadius.circular(24),
                               onTap: () => Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) =>
                                           GridViewScreen(category: 'popular'))),
-                              child: Text('View all')),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text('View all'),
+                              )),
                         ],
                       ),
                       HorizontalList(_myData),

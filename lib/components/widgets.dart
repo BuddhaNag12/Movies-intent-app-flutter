@@ -6,6 +6,7 @@ import 'package:movies_intent/models/movieModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movies_intent/screens/detailScreen.dart';
+import 'package:movies_intent/screens/searchScreen.dart';
 
 // global Appbar
 
@@ -23,7 +24,7 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       centerTitle: true,
       elevation: 0.0,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       leading: IconButton(
         icon: Icon(Icons.menu),
         // color: Colors,
@@ -37,7 +38,12 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: Icon(Icons.search),
                 enableFeedback: true,
                 tooltip: 'Head toward search Screen',
-                onPressed: () => {Navigator.pushNamed(context, '/Search')},
+                onPressed: () => Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                        fullscreenDialog: true,
+                        maintainState: true,
+                        builder: (context) => SearchScreen())),
               ),
             ],
           ),
@@ -82,8 +88,8 @@ class _CarouselState extends State<Carousel> {
                     borderRadius: BorderRadius.circular(40),
                     boxShadow: [
                       BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          blurRadius: 5,
+                          color: Colors.black45.withOpacity(0.2),
+                          blurRadius: 4,
                           spreadRadius: 0,
                           offset: Offset(0, 2)),
                     ]),

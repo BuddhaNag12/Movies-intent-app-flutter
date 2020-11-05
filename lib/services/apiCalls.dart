@@ -33,9 +33,9 @@ Future<Welcome> fetchUpcomingMovies() async {
   }
 }
 
-Future<Welcome> getMovieswithType(String type) async {
+Future<Welcome> getMovieswithType(String type,int page) async {
   final String moviesWithType =
-      'https://api.themoviedb.org/3/movie/$type?api_key=${ApiKey().apiKey}&language=en-US&page=1';
+      'https://api.themoviedb.org/3/movie/$type?api_key=${ApiKey().apiKey}&language=en-US&page=$page';
   final response = await http.get(moviesWithType);
 
   if (response.statusCode == 200) {

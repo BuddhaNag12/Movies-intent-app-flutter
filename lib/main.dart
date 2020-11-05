@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:movies_intent/screens/aboutScreen.dart';
@@ -19,25 +20,52 @@ class MyApp extends StatelessWidget {
       statusBarColor: Colors.transparent,
     ));
 
-    return MaterialApp(
-      theme: ThemeData(
+    return AdaptiveTheme(
+      light: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.amber,
-        // scaffoldBackgroundColor: Colors.white,
-        // brightness: Brightness.dark,
-        accentColor: Color.fromRGBO(247, 236, 110, 100),
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        accentColor: Colors.amber,
       ),
-      themeMode: ThemeMode.system,
-      debugShowCheckedModeBanner: false,
-      title: 'Movies Intent',
-      initialRoute: '/',
-      routes: {
-        '/': (context) => HomeScreen(),
-        '/Search': (context) => SearchScreen(),
-        '/Details': (context) => DetailScreen(),
-        '/About': (context) => AboutScreen(),
-        '/Help': (context) => HelpScreen(),
-      },
+      dark: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.amber,
+        accentColor: Colors.amber,
+      ),
+      initial: AdaptiveThemeMode.dark,
+      builder: (theme, darkTheme) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Movies Intent',
+        initialRoute: '/',
+        theme: theme,
+        routes: {
+          '/': (context) => HomeScreen(),
+          '/Search': (context) => SearchScreen(),
+          '/Details': (context) => DetailScreen(),
+          '/About': (context) => AboutScreen(),
+          '/Help': (context) => HelpScreen(),
+        },
+      ),
     );
+
+    // return MaterialApp(
+    //   theme: ThemeData(
+    //     primarySwatch: Colors.amber,
+    //     // scaffoldBackgroundColor: Colors.white,
+    //     brightness: Brightness.dark,
+    //     accentColor: Color.fromRGBO(247, 236, 110, 100),
+    //     visualDensity: VisualDensity.adaptivePlatformDensity,
+    //   ),
+    //   themeMode: ThemeMode.dark,
+    //   debugShowCheckedModeBanner: false,
+    //   title: 'Movies Intent',
+    //   initialRoute: '/',
+    //   routes: {
+    //     '/': (context) => HomeScreen(),
+    //     '/Search': (context) => SearchScreen(),
+    //     '/Details': (context) => DetailScreen(),
+    //     '/About': (context) => AboutScreen(),
+    //     '/Help': (context) => HelpScreen(),
+    //   },
+    // );
   }
 }
