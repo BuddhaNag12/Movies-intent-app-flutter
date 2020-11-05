@@ -26,9 +26,9 @@ dependencies:
 
   http: ^0.12.2
   carousel_slider:
-  mobx:
-  flutter_mobx:
-  provider:
+  # mobx:
+  # flutter_mobx:
+  # provider:
   flutter_dotenv:
   loading: ^1.0.2
   intl: ^0.16.1
@@ -40,8 +40,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   
-  build_runner:
-  mobx_codegen:
+  # build_runner:
+  # mobx_codegen:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

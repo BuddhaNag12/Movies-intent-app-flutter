@@ -184,7 +184,7 @@ Widget listView(BuildContext context, List<Result> listitems) {
                       spreadRadius: 0),
                 ]),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Stack(children: [
                   Container(

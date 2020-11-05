@@ -46,26 +46,5 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
-
-    // return MaterialApp(
-    //   theme: ThemeData(
-    //     primarySwatch: Colors.amber,
-    //     // scaffoldBackgroundColor: Colors.white,
-    //     brightness: Brightness.dark,
-    //     accentColor: Color.fromRGBO(247, 236, 110, 100),
-    //     visualDensity: VisualDensity.adaptivePlatformDensity,
-    //   ),
-    //   themeMode: ThemeMode.dark,
-    //   debugShowCheckedModeBanner: false,
-    //   title: 'Movies Intent',
-    //   initialRoute: '/',
-    //   routes: {
-    //     '/': (context) => HomeScreen(),
-    //     '/Search': (context) => SearchScreen(),
-    //     '/Details': (context) => DetailScreen(),
-    //     '/About': (context) => AboutScreen(),
-    //     '/Help': (context) => HelpScreen(),
-    //   },
-    // );
   }
 }

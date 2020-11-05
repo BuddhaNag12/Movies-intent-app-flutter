@@ -1,6 +1,6 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:movies_intent/constants/movie_const.dart';
@@ -149,7 +149,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   style: TextStyle(fontSize: 20),
                 ),
                 Text(
-                  ' $releaseDate',
+                  DateFormat('yyyy-MM-dd').format(releaseDate).toString(),
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
                 ),
               ],
