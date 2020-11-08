@@ -93,6 +93,7 @@ class _GridViewScreenState extends State<GridViewScreen> {
                       title: Text(
                         '${widget.category} Movies'.toUpperCase(),
                         style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
                           wordSpacing: 1.5,
                           color: Colors.white,
                           fontStyle: FontStyle.italic,
@@ -192,6 +193,7 @@ class _GridViewScreenState extends State<GridViewScreen> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             color: Colors.white,
+                                            fontFamily: 'Nunito-Bold',
                                             fontSize: 16),
                                       ),
                                     ),
@@ -208,7 +210,8 @@ class _GridViewScreenState extends State<GridViewScreen> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.w200,
                                             color: Colors.white,
-                                            fontSize: 16),
+                                            fontFamily: 'Nunito-Light',
+                                            fontSize: 14),
                                       ),
                                     ),
                                   ],

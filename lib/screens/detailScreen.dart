@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
@@ -7,6 +8,7 @@ import 'package:movies_intent/constants/movie_const.dart';
 import 'package:movies_intent/models/movieDetailModel.dart';
 import 'package:movies_intent/screens/imageScreen.dart';
 import 'package:movies_intent/services/fetchMovieDetails.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailScreen extends StatefulWidget {
   final int movieId;
@@ -23,6 +25,15 @@ class _DetailScreenState extends State<DetailScreen> {
   void initState() {
     _myData = fetchMovieDetail(widget.movieId);
     super.initState();
+  }
+
+  viewTrailer(String query) async {
+    String url = 'https://www.youtube.com/results?search_query=$query';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   Widget _descriptionView(
@@ -45,38 +56,49 @@ class _DetailScreenState extends State<DetailScreen> {
             child: SizedBox(
                 child: Container(
               margin: EdgeInsets.all(10),
-              alignment: Alignment.topLeft,
-              child: Wrap(spacing: 2, children: [
-                Text(
-                  title,
-                  style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'HindVadodara'),
-                ),
-                InkWell(
-                  splashColor: Colors.amberAccent,
-                  child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      padding: EdgeInsets.all(6),
-                      decoration: BoxDecoration(
-                          color: adult ? Colors.redAccent : Colors.teal,
-                          boxShadow: [
-                            BoxShadow(
-                                color: Color.fromRGBO(0, 0, 0, 0.6),
-                                blurRadius: 2,
-                                spreadRadius: 0,
-                                offset: Offset.fromDirection(0.5, 1)),
-                          ],
-                          borderRadius: BorderRadius.circular(20)),
-                      child: Text(
-                        adult == true ? 'Adult' : 'Non Adult',
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Colors.white,
-                            fontFamily: "HindVadodara"),
-                      )),
-                )
+              alignment: Alignment.centerLeft,
+              child: Wrap(alignment: WrapAlignment.start, children: [
+                Container(
+                    child: Row(
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          fontFamily: 'HindVadodara'),
+                    ),
+                    InkWell(
+                      splashColor: Colors.amberAccent,
+                      child: Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5),
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: adult ? Colors.redAccent : Colors.teal,
+                              boxShadow: [
+                                BoxShadow(
+                                    color: Color.fromRGBO(0, 0, 0, 0.6),
+                                    blurRadius: 2,
+                                    spreadRadius: 0,
+                                    offset: Offset.fromDirection(0.5, 1)),
+                              ],
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Text(
+                            adult ? 'Adult' : 'Non Adult',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Colors.white,
+                                fontFamily: "HindVadodara"),
+                          )),
+                    ),
+                  ],
+                )),
+                FlatButton.icon(
+                    color: Colors.white30,
+                    onPressed: () => viewTrailer(title),
+                    icon: Icon(Icons.video_label),
+                    label: Text("Watch Trailer"))
               ]),
             )),
           ),
@@ -96,7 +118,7 @@ class _DetailScreenState extends State<DetailScreen> {
                         padding: EdgeInsets.symmetric(
                             vertical: 10.0, horizontal: 10.0),
                         decoration: BoxDecoration(
-                            color: Colors.deepOrange[200],
+                            color: e.id%2==0? Colors.deepOrange[200] : Colors.green[200],
                             boxShadow: [
                               BoxShadow(
                                   color: Color.fromRGBO(0, 0, 0, 0.6),
@@ -246,15 +268,24 @@ class _DetailScreenState extends State<DetailScreen> {
                     alignment: Alignment.centerLeft,
                     child: companies.length > 0
                         ? Wrap(
-                            spacing: 5,
                             children: companies.map((e) {
                               return Container(
+                                height: 50,
+                                width:
+                                    MediaQuery.of(context).size.width / 2 - 20,
                                 margin: EdgeInsets.symmetric(
                                     horizontal: 5, vertical: 5),
                                 padding: EdgeInsets.all(10),
-                                // alignment: Alignment.centerLeft,
                                 decoration: BoxDecoration(
-                                    color: Colors.red[400],
+                                    gradient: LinearGradient(
+                                        colors: [
+                                          Colors.white38,
+                                          e.id % 2 == 0
+                                              ? Colors.amberAccent
+                                              : Colors.redAccent,
+                                        ],
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.centerRight),
                                     boxShadow: [
                                       BoxShadow(
                                           color: Color.fromRGBO(0, 0, 0, 0.6),
@@ -263,11 +294,41 @@ class _DetailScreenState extends State<DetailScreen> {
                                           offset: Offset.fromDirection(0.5, 1)),
                                     ],
                                     borderRadius: BorderRadius.circular(20)),
-                                child: Text(
-                                  e.name,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: 'Nunito-Light'),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    // Text(e.originCountry),
+                                    e.logoPath != null
+                                        ? Image.network(
+                                            MovieConstants()
+                                                .getImagePath(e.logoPath),
+                                            width: 30,
+                                            height: 30,
+                                          )
+                                        : SizedBox(),
+
+                                    e.name.length > 12
+                                        ? Text(
+                                            e.name.substring(0, 11),
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'Nunito-Light',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600),
+                                          )
+                                        : Text(
+                                            e.name,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontFamily: 'Nunito-Light',
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w600),
+                                          ),
+                                  ],
                                 ),
                               );
 
@@ -349,7 +410,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       ),
                     ),
                     SliverFixedExtentList(
-                        itemExtent: 800,
+                        itemExtent: 1000,
                         delegate: SliverChildListDelegate([
                           _descriptionView(
                             snapShot.data.title,

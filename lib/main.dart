@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:movies_intent/screens/aboutScreen.dart';
 import 'package:movies_intent/screens/detailScreen.dart';
-import 'package:movies_intent/screens/helpScreen.dart';
 import 'package:movies_intent/screens/homeScreen.dart';
 import 'package:movies_intent/screens/imageScreen.dart';
 import 'package:movies_intent/screens/searchScreen.dart';
@@ -45,7 +44,6 @@ class MyApp extends StatelessWidget {
           '/Search': (context) => SearchScreen(),
           '/Details': (context) => DetailScreen(),
           '/About': (context) => AboutScreen(),
-          '/Help': (context) => HelpScreen(),
           '/Image': (context) => ImageScreen(),
         },
       ),

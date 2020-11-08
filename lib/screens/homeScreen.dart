@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
       isDismissible: true,
       builder: (BuildContext context) {
         return Container(
-          height: 280,
+          height: 220,
           child: ListView(
             padding: EdgeInsets.all(5),
             children: <Widget>[
@@ -91,13 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: ListTile(
                       leading: Icon(Icons.info_outline),
                       title: Text('About'),
-                    ),
-                  ),
-                  FlatButton(
-                    onPressed: () => {Navigator.pushNamed(context, "/Help")},
-                    child: ListTile(
-                      leading: Icon(Icons.help_outline),
-                      title: Text('Help'),
                     ),
                   ),
                   FlatButton(

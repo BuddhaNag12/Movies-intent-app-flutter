@@ -1,6 +1,8 @@
 import 'package:movies_intent/constants/apiKey.dart';
 
 class MovieConstants {
+  final String developerImage =
+      'https://scontent.fgau2-1.fna.fbcdn.net/v/t1.0-9/119953291_3356734641070012_2649001979260837698_o.jpg?_nc_cat=103&ccb=2&_nc_sid=09cbfe&_nc_ohc=VAzsAy_PVk4AX_a2QjR&_nc_ht=scontent.fgau2-1.fna&oh=cd70c390d9eb22c13dc10c90264888cf&oe=5FCEE7B4';
   final String movieUrl =
       'https://api.themoviedb.org/3/discover/movie?api_key=${ApiKey().apiKey}&sort_by=popularity.desc&page=1';
 
