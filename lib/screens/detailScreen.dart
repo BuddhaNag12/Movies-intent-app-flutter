@@ -49,7 +49,10 @@ class _DetailScreenState extends State<DetailScreen> {
               child: Wrap(spacing: 2, children: [
                 Text(
                   title,
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'HindVadodara'),
                 ),
                 InkWell(
                   splashColor: Colors.amberAccent,
@@ -68,7 +71,10 @@ class _DetailScreenState extends State<DetailScreen> {
                           borderRadius: BorderRadius.circular(20)),
                       child: Text(
                         adult == true ? 'Adult' : 'Non Adult',
-                        style: TextStyle(fontSize: 15, color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 15,
+                            color: Colors.white,
+                            fontFamily: "HindVadodara"),
                       )),
                 )
               ]),
@@ -108,7 +114,7 @@ class _DetailScreenState extends State<DetailScreen> {
               )),
           SizedBox(height: 20),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 20.0),
+            margin: EdgeInsets.symmetric(horizontal: 15.0),
             alignment: Alignment.center,
             child: Row(
               children: [
@@ -133,24 +139,30 @@ class _DetailScreenState extends State<DetailScreen> {
                         borderRadius: BorderRadius.circular(20)),
                     child: Text(
                       '$status',
-                      style: TextStyle(fontSize: 15, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontFamily: 'Nunito-Light'),
                     )),
               ],
             ),
           ),
           SizedBox(height: 20),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 20.0),
+            margin: EdgeInsets.symmetric(horizontal: 15.0),
             alignment: Alignment.center,
             child: Row(
               children: [
                 Text(
-                  'Released Date :',
-                  style: TextStyle(fontSize: 20),
+                  'Released Date : ',
+                  style: TextStyle(fontSize: 20, fontFamily: 'Nunito-Bold'),
                 ),
                 Text(
                   DateFormat('yyyy-MM-dd').format(releaseDate).toString(),
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      fontFamily: 'Nunito-Light'),
                 ),
               ],
             ),
@@ -163,7 +175,10 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Text(
                     'Tagline',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Nunito-Bold'),
                   ),
                   Divider(
                     height: 10,
@@ -173,7 +188,9 @@ class _DetailScreenState extends State<DetailScreen> {
                       ? Text(
                           tagline,
                           style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w400),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'Nunito-Light'),
                         )
                       : Text('No Plot found'),
                 ],
@@ -186,7 +203,10 @@ class _DetailScreenState extends State<DetailScreen> {
                 children: [
                   Text(
                     'Movie Plot',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: 'Nunito-Bold'),
                   ),
                   Divider(
                     height: 10,
@@ -196,7 +216,9 @@ class _DetailScreenState extends State<DetailScreen> {
                       ? Text(
                           plot,
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.w400),
+                              fontSize: 20,
+                              fontWeight: FontWeight.w400,
+                              fontFamily: 'Nunito-Light'),
                         )
                       : Text('No Plot found'),
                 ],
@@ -213,7 +235,9 @@ class _DetailScreenState extends State<DetailScreen> {
                       padding: EdgeInsets.symmetric(horizontal: 5),
                       child: Text('Production Companies',
                           style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold))),
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Nunito-Bold'))),
                   Divider(
                     height: 10,
                     thickness: 1,
@@ -241,7 +265,9 @@ class _DetailScreenState extends State<DetailScreen> {
                                     borderRadius: BorderRadius.circular(20)),
                                 child: Text(
                                   e.name,
-                                  style: TextStyle(color: Colors.white),
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Nunito-Light'),
                                 ),
                               );
 
@@ -277,9 +303,9 @@ class _DetailScreenState extends State<DetailScreen> {
                         title: Text(
                           snapShot.data.originalTitle,
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                          ),
+                              color: Colors.white,
+                              fontSize: 25,
+                              fontFamily: 'HindVadodara'),
                         ),
                         background: snapShot.data.backdropPath != null
                             ? InkWell(

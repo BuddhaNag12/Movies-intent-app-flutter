@@ -15,7 +15,9 @@ class _ImageScreenState extends State<ImageScreen> {
 
   changeFit() {
     setState(() {
-      _boxfit== BoxFit.contain ? _boxfit= BoxFit.cover : _boxfit=BoxFit.contain;
+      _boxfit == BoxFit.contain
+          ? _boxfit = BoxFit.cover
+          : _boxfit = BoxFit.contain;
     });
   }
 
@@ -25,12 +27,17 @@ class _ImageScreenState extends State<ImageScreen> {
       body: Stack(children: [
         Hero(
           tag: widget.imagePath,
-          child: Image.network(
-            MovieConstants().getBackdropPath(widget.imagePath),
-            fit: _boxfit,
-            height: double.infinity,
-            width: double.infinity,
-            alignment: Alignment.center,
+          child: InteractiveViewer(
+            boundaryMargin: EdgeInsets.all(20.0),
+            // minScale:1.0,
+            maxScale: 5.0,
+            child: Image.network(
+              MovieConstants().getBackdropPath(widget.imagePath),
+              fit: _boxfit,
+              height: double.infinity,
+              width: double.infinity,
+              alignment: Alignment.center,
+            ),
           ),
         ),
         Positioned(

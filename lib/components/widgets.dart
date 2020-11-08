@@ -6,7 +6,9 @@ import 'package:movies_intent/models/movieModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:movies_intent/screens/detailScreen.dart';
+import 'package:movies_intent/screens/gridViewScreen.dart';
 import 'package:movies_intent/screens/searchScreen.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 // global Appbar
 
@@ -71,10 +73,9 @@ class _CarouselState extends State<Carousel> {
           autoPlay: true,
           autoPlayInterval: Duration(seconds: 3),
           autoPlayAnimationDuration: Duration(milliseconds: 800),
-          autoPlayCurve: Curves.fastOutSlowIn,
-          enlargeCenterPage: false,
+          autoPlayCurve: Curves.easeInOut,
+          enlargeCenterPage: true,
           scrollDirection: Axis.horizontal,
-          // height: 400,
           viewportFraction: 0.7,
         ),
         items: widget.payload.map((i) {
@@ -120,135 +121,182 @@ Widget posterWidget(BuildContext context, String imagePath, int id) {
   return imagePath != null
       ? GestureDetector(
           onTap: () => Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DetailScreen(movieId: id)),
-          ),
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DetailScreen(movieId: id)),
+              ),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(40),
-              child: Image.network(MovieConstants().getImagePath(imagePath),
-                  width: 300, height: 200, fit: BoxFit.cover)),
-        )
+              child: FadeInImage.memoryNetwork(
+                placeholderCacheHeight: 20,
+                placeholderCacheWidth: 20,
+                fadeInCurve: Curves.easeIn,
+                placeholder: kTransparentImage,
+                image: MovieConstants().getImagePath(imagePath),
+                fit: BoxFit.cover,
+                width: 300,
+                height: 200,
+              )))
       : ClipRRect(
           borderRadius: BorderRadius.circular(40),
-          child: Image.network(
-              'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
-              fit: BoxFit.cover));
+          child: Image.network(MovieConstants().roughImage, fit: BoxFit.cover));
 }
 
 Widget headingContent(Future<Welcome> _myData) {
   return FutureBuilder<Welcome>(
     future: _myData,
     builder: (context, snapshot) {
-      if (snapshot.hasData) {
-        return Carousel(snapshot.data.results);
-      } else {
-        return Center(
-          child: Loading(
-              indicator: BallPulseIndicator(), size: 50.0, color: Colors.amber),
-        );
+      switch (snapshot.connectionState) {
+        case ConnectionState.waiting:
+          return Center(
+            child: Loading(
+                indicator: BallPulseIndicator(),
+                size: 50.0,
+                color: Colors.amber),
+          );
+          break;
+        case ConnectionState.none:
+          return Center(child: Text('No internet connection'));
+
+        default:
+          if (snapshot.hasData) {
+            return Carousel(snapshot.data.results);
+          } else {
+            return Center(
+              child: Loading(
+                  indicator: BallPulseIndicator(),
+                  size: 50.0,
+                  color: Colors.amber),
+            );
+          }
       }
     },
   );
 }
 
-Widget listView(BuildContext context, List<Result> listitems) {
-  return ListView.builder(
-    padding: EdgeInsets.symmetric(vertical: 10.0),
-    scrollDirection: Axis.horizontal,
-    itemCount: listitems.length,
-    itemBuilder: (_, i) {
-      return InkWell(
-        borderRadius: BorderRadius.all(
-          Radius.circular(24),
-        ),
-        splashColor: Colors.amber,
-        onTap: () => {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => DetailScreen(movieId: listitems[i].id)))
-        },
-        child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 5),
-            width: MediaQuery.of(context).size.width * 0.4,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(24),
-                gradient: LinearGradient(colors: [
-                  Colors.yellow,
-                  Colors.redAccent,
-                ], begin: Alignment.topLeft, end: Alignment.centerRight),
-                boxShadow: [
-                  BoxShadow(
-                      color: Color.fromRGBO(0, 0, 0, 0.6),
-                      blurRadius: 2,
-                      spreadRadius: 0),
-                ]),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Stack(children: [
-                  Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: listitems[i].posterPath != null
-                          ? Image.network(
-                              MovieConstants()
-                                  .getImagePath(listitems[i].posterPath),
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            )
-                          : listitems[i].backdropPath != null
-                              ? Image.network(
-                                  MovieConstants().getBackdropPath(
-                                      listitems[i].backdropPath),
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.network(
-                                  MovieConstants().roughImage,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  height: 200,
-                                  fit: BoxFit.cover,
-                                ),
+class ListViewWidget extends StatefulWidget {
+  final List<Result> listitems;
+  final _scrollDirection;
+  ListViewWidget(this.listitems, this._scrollDirection);
+
+  @override
+  _ListViewWidgetState createState() => _ListViewWidgetState();
+}
+
+class _ListViewWidgetState extends State<ListViewWidget> {
+  // var top = 0.0;
+  // var right = 0.0;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Future.delayed(const Duration(milliseconds: 500), () {
+  //     setState(() {
+  //       top = 10;
+  //       right = 20;
+  //     });
+  //   });
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      padding: EdgeInsets.symmetric(vertical: 10.0),
+      scrollDirection: widget._scrollDirection,
+      itemCount: widget.listitems.length,
+      itemBuilder: (_, i) {
+        return InkWell(
+          borderRadius: BorderRadius.all(
+            Radius.circular(24),
+          ),
+          splashColor: Colors.amber,
+          onTap: () => {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        DetailScreen(movieId: widget.listitems[i].id)))
+          },
+          child: Container(
+              margin: EdgeInsets.symmetric(horizontal: 5),
+              width: MediaQuery.of(context).size.width * 0.4,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                  gradient: LinearGradient(colors: [
+                    Color.fromRGBO(255, 200, 55, 1),
+                    Color.fromRGBO(255, 128, 8, 1),
+                  ], begin: Alignment.bottomLeft, end: Alignment.bottomRight),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromRGBO(0, 0, 0, 0.6),
+                        blurRadius: 2,
+                        spreadRadius: 0),
+                  ]),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Stack(children: [
+                    Container(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: widget.listitems[i].posterPath != null
+                            ? FadeInImage.memoryNetwork(
+                                placeholder: kTransparentImage,
+                                placeholderCacheHeight: 50,
+                                placeholderCacheWidth: 150,
+                                fadeInCurve: Curves.easeIn,
+                                fadeOutCurve: Curves.easeOut,
+                                image: MovieConstants().getImagePath(
+                                    widget.listitems[i].posterPath),
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                height: 200,
+                                fit: BoxFit.cover,
+                              )
+                            : widget.listitems[i].backdropPath != null
+                                ? Image.network(
+                                    MovieConstants().getBackdropPath(
+                                        widget.listitems[i].backdropPath),
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Image.network(
+                                    MovieConstants().roughImage,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.4,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 20,
+                      top: 10,
+                      child: voteAverage(
+                          widget.listitems[i].voteAverage.toString()),
+                    ),
+                  ]),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text(
+                      widget.listitems[i].title,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontFamily: 'Nunito-Light',
+                          fontSize: 14),
                     ),
                   ),
-                  Positioned(
-                    right: 10,
-                    top: 10,
-                    child: voteAverage(listitems[i].voteAverage.toString()),
-                  ),
-                ]),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text(
-                    listitems[i].title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 16),
-                  ),
-                ),
-                // Text(
-                //   listitems[i].releaseDate.toString(),
-                //   overflow: TextOverflow.ellipsis,
-                //   textAlign: TextAlign.center,
-                //   style: TextStyle(
-                //       fontWeight: FontWeight.w200,
-                //       color: Colors.white,
-                //       fontSize: 12),
-                // ),
-              ],
-            )),
-      );
-    },
-  );
+                ],
+              )),
+        );
+      },
+    );
+  }
 }
 
 Widget voteAverage(String vote) {
@@ -257,5 +305,55 @@ Widget voteAverage(String vote) {
       '$vote / 10',
       style: TextStyle(color: Colors.white),
     ),
+  );
+}
+
+Widget loader() {
+  return Center(
+    child: Loading(
+        indicator: BallPulseIndicator(), size: 50.0, color: Colors.amber),
+  );
+}
+
+Widget separatorWidget(context, String title, String route) {
+  return Column(
+    children: [
+      Container(
+        alignment: Alignment.centerLeft,
+        margin: EdgeInsets.symmetric(horizontal: 20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          child: Text(title,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Nunito-Bold')),
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Container(
+            height: 1.0,
+            width: MediaQuery.of(context).size.width / 2 + 50,
+            color: Colors.redAccent,
+          ),
+          InkWell(
+              borderRadius: BorderRadius.circular(24),
+              onTap: () => Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                      fullscreenDialog: true,
+                      maintainState: true,
+                      builder: (context) => GridViewScreen(category: route))),
+              splashColor: Colors.amberAccent,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('View all'),
+              )),
+        ],
+      )
+    ],
   );
 }

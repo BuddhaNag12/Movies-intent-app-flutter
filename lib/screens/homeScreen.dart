@@ -1,9 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:movies_intent/components/widgets.dart';
 import 'package:movies_intent/models/movieModel.dart';
-import 'package:movies_intent/screens/gridViewScreen.dart';
 import 'package:movies_intent/services/apiCalls.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,20 +12,58 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  Future<Welcome> _myData;
-  Future<Welcome> _upcoming;
-  bool isLoading = true;
+  Future<Iterable<Result>> _movies;
+  List<Result> _listOfMovies;
+  List<Result> _upComing;
+  bool _isLoading = false;
+  DateTime currentDate = new DateTime.now();
+  String _error;
+
   @override
   void initState() {
-    isLoading = true;
-    _myData = fetchMovies();
-    _upcoming = fetchUpcomingMovies();
-    fetchMovies().then((val) => {
-          fetchUpcomingMovies().then((value) => {
-                setState(() => {isLoading = false})
+    _isLoading = true;
+    _movies = fetchData();
+    _movies
+        .then((value) => {
+              setState(() {
+                _listOfMovies =
+                    value.where((element) => element.voteAverage >= 7).toList();
+                _isLoading = false;
+                _upComing = value
+                    .where((element) =>
+                        currentDate.year >= element.releaseDate.year)
+                    .toList();
               })
-        });
+            })
+        .catchError((E) => {
+              print(E),
+              setState(() {
+                _error = E.toString();
+              })
+            });
+
     super.initState();
+  }
+
+  Future<void> onRefreshCall() async {
+    await _movies
+        .then((value) => {
+              setState(() {
+                _listOfMovies =
+                    value.where((element) => element.voteAverage >= 7).toList();
+                _isLoading = false;
+                _upComing = value
+                    .where((element) =>
+                        element.releaseDate.year >= currentDate.year)
+                    .toList();
+              }),
+            })
+        .catchError((E) => {
+              setState(() {
+                _error = E;
+              })
+            });
+    return;
   }
 
   void showbottomSheet() {
@@ -35,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context: context,
       enableDrag: true,
       elevation: 5,
+      isDismissible: true,
       builder: (BuildContext context) {
         return Container(
           height: 280,
@@ -68,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         AdaptiveTheme.of(context).toggleThemeMode(),
                     child: ListTile(
                       leading: Icon(Icons.settings_brightness),
-                      title: Text('Toggle Theme'),
+                      title: Text('Dark Mode'),
                     ),
                   ),
                   FlatButton(
@@ -90,129 +127,34 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
-        ? Scaffold(
-            body: Center(
-              child: Loading(
-                  indicator: BallPulseIndicator(),
-                  size: 50.0,
-                  color: Colors.amber),
-            ),
-          )
-        : Scaffold(
-            appBar: MyAppBar(showbottomSheet),
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  headingContent(_myData),
-                  Column(
-                    children: [
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.symmetric(horizontal: 20),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 5),
-                          child: Text('Upcoming Movies',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            height: 1.0,
-                            width: MediaQuery.of(context).size.width / 2 + 50,
-                            color: Colors.redAccent,
-                          ),
-                          InkWell(
-                              borderRadius: BorderRadius.circular(24),
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => GridViewScreen(
-                                          category: 'upcoming'))),
-                              splashColor: Colors.amberAccent,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('View all'),
-                              )),
-                        ],
-                      ),
-                      HorizontalList(_upcoming),
-                    ],
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    alignment: Alignment.centerLeft,
-                    margin: EdgeInsets.symmetric(horizontal: 20),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8.0, bottom: 10),
-                      child: Text('Most Popular',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
+    return _isLoading
+        ? Scaffold(body: loader())
+        : _error != null
+            ? Scaffold(
+                body: Center(
+                child: Text("Opps Error occured $_error"),
+              ))
+            : Scaffold(
+                appBar: MyAppBar(showbottomSheet),
+                body: RefreshIndicator(
+                  onRefresh: onRefreshCall,
+                  child: SingleChildScrollView(
+                    child: Container(
+                      child: Column(children: [
+                        Carousel(_listOfMovies),
+                        separatorWidget(context, 'Most Rated', 'popular'),
+                        Container(
+                            height: 250,
+                            child:
+                                ListViewWidget(_listOfMovies, Axis.horizontal)),
+                        separatorWidget(context, 'Top Movies', 'upcoming'),
+                        Container(
+                            height: 250,
+                            child: ListViewWidget(_upComing, Axis.horizontal)),
+                      ]),
                     ),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Container(
-                            height: 1.0,
-                            width: MediaQuery.of(context).size.width / 2 + 50,
-                            color: Colors.redAccent,
-                          ),
-                          InkWell(
-                              borderRadius: BorderRadius.circular(24),
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          GridViewScreen(category: 'popular'))),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Text('View all'),
-                              )),
-                        ],
-                      ),
-                      HorizontalList(_myData),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-  }
-}
-
-class HorizontalList extends StatelessWidget {
-  final Future<Welcome> movies;
-  HorizontalList(this.movies);
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<Welcome>(
-        future: movies,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Container(
-                height: 250,
-                // color: Colors.red,
-                child: listView(context, snapshot.data.results));
-          } else {
-            return Center(
-              child: Loading(
-                  indicator: BallPulseIndicator(),
-                  size: 50.0,
-                  color: Colors.amber),
-            );
-          }
-        });
+                ),
+              );
   }
 }

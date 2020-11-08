@@ -5,6 +5,7 @@ import 'package:movies_intent/screens/aboutScreen.dart';
 import 'package:movies_intent/screens/detailScreen.dart';
 import 'package:movies_intent/screens/helpScreen.dart';
 import 'package:movies_intent/screens/homeScreen.dart';
+import 'package:movies_intent/screens/imageScreen.dart';
 import 'package:movies_intent/screens/searchScreen.dart';
 import 'package:flutter/material.dart';
 
@@ -25,11 +26,13 @@ class MyApp extends StatelessWidget {
         brightness: Brightness.light,
         primarySwatch: Colors.amber,
         accentColor: Colors.amber,
+        // fontFamily: 'Nunito-Light'
       ),
       dark: ThemeData(
         brightness: Brightness.dark,
         primarySwatch: Colors.amber,
         accentColor: Colors.amber,
+        // fontFamily: 'Nunito-Light'
       ),
       initial: AdaptiveThemeMode.dark,
       builder: (theme, darkTheme) => MaterialApp(
@@ -43,6 +46,7 @@ class MyApp extends StatelessWidget {
           '/Details': (context) => DetailScreen(),
           '/About': (context) => AboutScreen(),
           '/Help': (context) => HelpScreen(),
+          '/Image': (context) => ImageScreen(),
         },
       ),
     );

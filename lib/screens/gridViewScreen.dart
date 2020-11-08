@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
@@ -9,7 +10,7 @@ import 'package:movies_intent/screens/imageScreen.dart';
 import 'package:movies_intent/services/apiCalls.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
-
+import 'package:transparent_image/transparent_image.dart';
 class GridViewScreen extends StatefulWidget {
   final String category;
   GridViewScreen({this.category});
@@ -115,9 +116,11 @@ class _GridViewScreenState extends State<GridViewScreen> {
                   ),
                   SliverGrid(
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          mainAxisSpacing: 5.0,
-                          crossAxisSpacing: 5.0,
-                          crossAxisCount: 2),
+                        mainAxisSpacing: 5.0,
+                        crossAxisSpacing: 5.0,
+                        crossAxisCount: 2,
+                        // childAspectRatio: 8,
+                      ),
                       delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int i) {
                         return Container(
@@ -127,11 +130,11 @@ class _GridViewScreenState extends State<GridViewScreen> {
                                 borderRadius: BorderRadius.circular(24),
                                 gradient: LinearGradient(
                                     colors: [
-                                      Colors.yellow,
-                                      Colors.redAccent,
+                                      Color.fromRGBO(255, 200, 55, 1),
+                                      Color.fromRGBO(255, 128, 8, 1),
                                     ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.centerRight),
+                                    begin: Alignment.bottomLeft,
+                                    end: Alignment.bottomRight),
                                 boxShadow: [
                                   BoxShadow(
                                       color: Color.fromRGBO(0, 0, 0, 0.6),
@@ -141,18 +144,38 @@ class _GridViewScreenState extends State<GridViewScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
+                              children: [
                                 Stack(
                                   children: [
-                                    posterWidget(context, _movies[i].posterPath,
-                                        _movies[i].id),
+                                    posterWidget(context,
+                                        _movies[i].backdropPath, _movies[i].id),
                                     Positioned(
                                       right: 10,
                                       top: 10,
                                       child: voteAverage(
                                           _movies[i].voteAverage.toString()),
                                     ),
+                                    Positioned(
+                                        right: 0,
+                                        bottom: 10,
+                                        child: IconButton(
+                                          icon: Icon(Icons.info_outline),
+                                          enableFeedback: true,
+                                          tooltip: 'Info about the movie',
+                                          onPressed: () => {
+                                            Navigator.push(
+                                                context,
+                                                CupertinoPageRoute(
+                                                    maintainState: true,
+                                                    fullscreenDialog: true,
+                                                    builder: (context) =>
+                                                        DetailScreen(
+                                                          movieId:
+                                                              _movies[i].id,
+                                                        )))
+                                          },
+                                          iconSize: 25,
+                                        )),
                                   ],
                                 ),
                                 Container(
@@ -212,46 +235,53 @@ class _GridViewScreenState extends State<GridViewScreen> {
 Widget posterWidget(BuildContext context, String imagePath, int id) {
   return imagePath != null
       ? Container(
-          height: 150,
-          // padding: EdgeInsets.all(5),
-
           child: InkWell(
+            onLongPress: () => {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    fullscreenDialog: true,
+                    builder: (context) => ImageScreen(imagePath: imagePath)),
+              ),
+            },
+            borderRadius: BorderRadius.circular(24),
+            splashColor: Colors.amberAccent,
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ImageScreen(
-                        imagePath: imagePath,
-                      )),
+                  builder: (context) => ImageScreen(imagePath: imagePath)),
             ),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(24),
-              splashColor: Colors.amberAccent,
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => DetailScreen(movieId: id)),
-              ),
-              child: Hero(
-                tag: imagePath,
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: Image.network(
-                        MovieConstants().getBackdropPath(imagePath),
-                        width: 200,
-                        height: 180,
-                        fit: BoxFit.cover)),
-              ),
+            child: Hero(
+              tag: imagePath,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(24),
+                  child: FadeInImage.memoryNetwork(
+                    // placeholderCacheHeight: 50,
+                    // placeholderCacheWidth: 50,
+                    fadeInCurve: Curves.easeIn,
+                    fadeOutCurve: Curves.easeOut,
+                    placeholder: kTransparentImage,
+                    image: MovieConstants().getBackdropPath(imagePath),
+                    height: 150,
+                    fit: BoxFit.cover,
+                  )),
             ),
           ),
         )
       : Container(
-          height: 150,
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(24),
-              child: Image.network(
-                  'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl-2.jpg',
+          child: InkWell(
+            borderRadius: BorderRadius.circular(24),
+            splashColor: Colors.amberAccent,
+            onTap: () => null,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: FadeInImage.memoryNetwork(
+                  placeholder:kTransparentImage,
+                  image: MovieConstants().roughImage,
+                  height: 150,
                   width: 200,
-                  height: 180,
-                  fit: BoxFit.cover)),
+                  fit: BoxFit.cover,
+                )),
+          ),
         );
 }
