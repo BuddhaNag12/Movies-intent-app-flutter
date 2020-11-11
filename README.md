@@ -10,16 +10,21 @@
 
 > Todo 
 ## Work in progress
-This apps is under development. Expected alpha version soon.
+This apps is under development. More Features comming soon ... 
 
 
 ## App screenshots
 
+![Screenshot_20201111-095420](https://user-images.githubusercontent.com/31861172/98766387-132bb500-2405-11eb-85a4-5653aa14603c.jpg)
+![Screenshot_20201111-095414](https://user-images.githubusercontent.com/31861172/98766396-14f57880-2405-11eb-9292-f94cac90599b.jpg)
+![Screenshot_20201111-095356](https://user-images.githubusercontent.com/31861172/98766398-1626a580-2405-11eb-8c37-9ea5b3ddfa52.jpg)
+![Screenshot_20201111-095649](https://user-images.githubusercontent.com/31861172/98766401-16bf3c00-2405-11eb-81a9-d3edeaea5afc.jpg)
+![Screenshot_20201111-095349](https://user-images.githubusercontent.com/31861172/98766402-1757d280-2405-11eb-886e-a320f94acad2.jpg)
 
 
 - [x] Updated fetching popular movies and upcoming movies
 - [x] Add filteration
-- [ ] Improve design and animation
+- [x] Improve design and animation
 
 ### Api 
 > The movie database *TMDB*	[TMDB](https://developers.themoviedb.org) 
