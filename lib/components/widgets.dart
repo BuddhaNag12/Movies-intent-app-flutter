@@ -29,7 +29,6 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Colors.transparent,
       leading: IconButton(
         icon: Icon(Icons.menu),
-        // color: Colors,
         onPressed: () => {_showButtomSheet()},
       ),
       actions: [
@@ -132,7 +131,7 @@ Widget posterWidget(BuildContext context, String imagePath, int id) {
                 placeholderCacheWidth: 20,
                 fadeInCurve: Curves.easeIn,
                 placeholder: kTransparentImage,
-                image: MovieConstants().getImagePath(imagePath),
+                image: MovieConstants().getOptimizedImagePath(imagePath),
                 fit: BoxFit.cover,
                 width: 300,
                 height: 200,
@@ -161,6 +160,8 @@ Widget headingContent(Future<Welcome> _myData) {
         default:
           if (snapshot.hasData) {
             return Carousel(snapshot.data.results);
+          } else if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error));
           } else {
             return Center(
               child: Loading(
@@ -246,7 +247,7 @@ class _ListViewWidgetState extends State<ListViewWidget> {
                                 placeholderCacheWidth: 150,
                                 fadeInCurve: Curves.easeIn,
                                 fadeOutCurve: Curves.easeOut,
-                                image: MovieConstants().getImagePath(
+                                image: MovieConstants().getBackdropPath(
                                     widget.listitems[i].posterPath),
                                 width: MediaQuery.of(context).size.width * 0.4,
                                 height: 200,

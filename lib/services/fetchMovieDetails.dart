@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'package:movies_intent/models/movieDetailModel.dart';
 
-Future<Welcome> fetchMovieDetail(int id) async {
+Future<MovieDetailModel> fetchMovieDetail(int id) async {
   String movieDetail =
       'https://api.themoviedb.org/3/movie/$id?api_key=${ApiKey().apiKey}&language=en-US';
 
@@ -13,7 +13,7 @@ Future<Welcome> fetchMovieDetail(int id) async {
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
-    return Welcome.fromJson(jsonDecode(response.body));
+    return MovieDetailModel.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 200 OK response,
     // then throw an exception.

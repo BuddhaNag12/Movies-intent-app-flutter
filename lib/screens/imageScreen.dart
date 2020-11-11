@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movies_intent/constants/movie_const.dart';
-// import 'package:flutter/services.dart';
 
 class ImageScreen extends StatefulWidget {
   final String imagePath;
@@ -21,9 +20,21 @@ class _ImageScreenState extends State<ImageScreen> {
     });
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.amber,
+        elevation: 5,
+        splashColor: Colors.amberAccent,
+        onPressed: changeFit,
+        child: Icon(
+          Icons.crop_16_9_outlined,
+          color: Colors.white,
+        ),
+      ),
       body: Stack(children: [
         Hero(
           tag: widget.imagePath,
@@ -41,26 +52,21 @@ class _ImageScreenState extends State<ImageScreen> {
           ),
         ),
         Positioned(
-            bottom: 10,
-            right: 10,
-            child: FloatingActionButton(
-              backgroundColor: Colors.amber,
-              elevation: 5,
-              splashColor: Colors.amberAccent,
-              onPressed: changeFit,
-              child: Icon(
-                Icons.crop_16_9_outlined,
-                color: Colors.white,
-              ),
-            )),
-        Positioned(
-            top: 20,
+            top: 25,
             left: 5,
             child: IconButton(
               onPressed: () => Navigator.pop(context),
               icon: Icon(Icons.arrow_back_ios),
               color: Colors.white,
             )),
+        // Positioned(
+        //     bottom: 20,
+        //     left: 10,
+        //     child: IconButton(
+        //       onPressed: _downloadImage,
+        //       icon: Icon(Icons.download_rounded),
+        //       color: Colors.white,
+        //     )),
       ]),
     );
   }

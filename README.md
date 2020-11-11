@@ -1,6 +1,28 @@
-# Movies Intent
+# **Movie Intent-flutter**
 
-A new Flutter project.
+> *This is a flutter android app which fetches movies from The movie data base TDMB api*
+
+## Features
+1. Search movies by name
+2. Search movies by genres
+3. View movie details
+
+
+> Todo 
+## Work in progress
+This apps is under development. Expected alpha version soon.
+
+
+## App screenshots
+
+
+
+- [x] Updated fetching popular movies and upcoming movies
+- [x] Add filteration
+- [ ] Improve design and animation
+
+### Api 
+> The movie database *TMDB*	[TMDB](https://developers.themoviedb.org) 
 
 ## Getting Started
 

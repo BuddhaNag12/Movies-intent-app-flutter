@@ -11,6 +11,7 @@ import 'package:movies_intent/services/apiCalls.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
+
 class GridViewScreen extends StatefulWidget {
   final String category;
   GridViewScreen({this.category});
@@ -279,7 +280,7 @@ Widget posterWidget(BuildContext context, String imagePath, int id) {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(24),
                 child: FadeInImage.memoryNetwork(
-                  placeholder:kTransparentImage,
+                  placeholder: kTransparentImage,
                   image: MovieConstants().roughImage,
                   height: 150,
                   width: 200,

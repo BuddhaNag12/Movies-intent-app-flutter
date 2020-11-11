@@ -23,25 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     _isLoading = true;
     _movies = fetchData();
-    _movies
-        .then((value) => {
-              setState(() {
-                _listOfMovies =
-                    value.where((element) => element.voteAverage >= 7).toList();
-                _isLoading = false;
-                _upComing = value
-                    .where((element) =>
-                        currentDate.year >= element.releaseDate.year)
-                    .toList();
-              })
-            })
-        .catchError((E) => {
-              print(E),
-              setState(() {
-                _error = E.toString();
-              })
-            });
-
+    onRefreshCall();
     super.initState();
   }
 
@@ -51,16 +33,19 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 _listOfMovies =
                     value.where((element) => element.voteAverage >= 7).toList();
-                _isLoading = false;
                 _upComing = value
                     .where((element) =>
-                        element.releaseDate.year >= currentDate.year)
+                        currentDate.year >= element.releaseDate.year)
                     .toList();
-              }),
+                _isLoading = false;
+                return;
+              })
             })
         .catchError((E) => {
               setState(() {
+                _isLoading = false;
                 _error = E;
+                return;
               })
             });
     return;
